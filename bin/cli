@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+
+require_once  __DIR__ . '/../vendor/autoload.php';
+
+\define('BP', \dirname(__DIR__));
+
+use DI\ContainerBuilder;
+use RoRoBy\SecretSpotKbTool\Console\CommandList;
+use Symfony\Component\Console\Application;
+
+$containerBuilder = new ContainerBuilder();
+$containerBuilder->useAutowiring(true);
+$containerBuilder->addDefinitions('./system/di.php');
+
+$container = $containerBuilder->build();
+
+$application = new Application();
+
+$commandList = $container->get(CommandList::class);
+$application->addCommands($commandList->getList());
+
+$application->run();
