@@ -30,8 +30,8 @@ class YamlUnpack
 
         $byType = $this->groupItemsByType($items);
 
-        foreach ($byType as $type => $items) {
-            $this->unpackTypeItems($type, $items, $dir);
+        foreach ($byType as $type => $typeItems) {
+            $this->unpackTypeItems($type, $typeItems, $dir);
         }
     }
 

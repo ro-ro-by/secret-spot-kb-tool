@@ -40,10 +40,13 @@ class SightStrategy
 
     private function buildItemDirPath(array $item): string
     {
+        $regionCode = explode(':', $item['belongsTo']['region'])[1];
+        $subregionCode = explode(':', $item['belongsTo']['subregion'])[1];
+
         return sprintf(
             '%s/%s',
-            $item['belongsTo']['region'],
-            $item['belongsTo']['subregion']
+            $regionCode,
+            $subregionCode
         );
     }
 

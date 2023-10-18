@@ -9,6 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Import KB to repository format command.
@@ -39,7 +40,8 @@ class Pack extends Command
 
         $yaml = $this->yamlPack->execute($inputDir);
 
-        $result = file_put_contents($kbFile, $yaml);
+        $fs = new Filesystem();
+        $fs->dumpFile($kbFile, $yaml);
 
         return Command::SUCCESS;
     }

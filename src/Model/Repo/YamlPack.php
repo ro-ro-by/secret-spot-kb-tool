@@ -33,7 +33,6 @@ class YamlPack
         return $this->yamlFormatter->format($outputData);
     }
 
-
     /**
      * Scan source files.
      *
