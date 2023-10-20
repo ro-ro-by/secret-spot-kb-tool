@@ -19,7 +19,7 @@ class MetadataStrategy
 
     public function execute(array $items, string $dir, string $type): void
     {
-        $filename = sprintf('%s/%s/%s.yaml', $dir, 'meta', $type);
+        $filename = sprintf('%s/%s/%s.yaml', $dir, '.meta', $type);
         $content = $this->yamlFormatter->format([
             'items' => $items,
         ]);
