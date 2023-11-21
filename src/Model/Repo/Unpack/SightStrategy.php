@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace RoRoBy\SecretSpotKbTool\Model\Repo\Unpack;
 
-use RoRoBy\SecretSpotKbTool\Model\Repo\Yaml\YamlFormatter;
+use RoRoBy\SecretSpotKbTool\Model\Repo\Unpack\Sight\DumpGeoJson;
+use RoRoBy\SecretSpotKbTool\Model\Repo\Unpack\Sight\Formatter;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -13,7 +14,8 @@ use Symfony\Component\Filesystem\Filesystem;
 class SightStrategy
 {
     public function __construct(
-        private readonly YamlFormatter $yamlFormatter
+        private readonly Formatter $formatter,
+        private readonly DumpGeoJson $dumpGeoJson
     ) {
     }
 
@@ -34,7 +36,9 @@ class SightStrategy
         $itemFilename = $this->buildItemFilename($item);
         $itemAbsPath = "{$itemDirAbsPath}/{$itemFilename}";
 
-        $itemContent = $this->yamlFormatter->format($item);
+        $item = $this->dumpGeoJson->execute($item, $itemDir, $dir);
+
+        $itemContent = $this->formatter->format($item);
         $fs->dumpFile($itemAbsPath, $itemContent);
     }
 

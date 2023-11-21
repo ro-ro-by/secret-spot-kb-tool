@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace RoRoBy\SecretSpotKbTool\Model\Repo;
 
+use RoRoBy\SecretSpotKbTool\Model\Repo\Pack\PostProcessorInterface;
 use RoRoBy\SecretSpotKbTool\Model\Repo\Yaml\YamlFormatter;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
@@ -14,7 +15,8 @@ use Symfony\Component\Yaml\Yaml;
 class YamlPack
 {
     public function __construct(
-        private readonly YamlFormatter $yamlFormatter
+        private readonly YamlFormatter $yamlFormatter,
+        private readonly PostProcessorInterface $postProcessor
     ) {
     }
 
@@ -25,6 +27,8 @@ class YamlPack
     public function execute(string $dir): string
     {
         $items = $this->scanSourceFiles($dir);
+
+        $items = $this->postProcessor->process($items, $dir);
 
         $outputData = [
             'items' => $items,
