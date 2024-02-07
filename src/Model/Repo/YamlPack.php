@@ -22,13 +22,16 @@ class YamlPack
 
     /**
      * @param string $dir repo directory
+     * @param bool $full
      * @return string packed KB
      */
-    public function execute(string $dir): string
+    public function execute(string $dir, bool $full = true): string
     {
         $items = $this->scanSourceFiles($dir);
 
-        $items = $this->postProcessor->process($items, $dir);
+        if ($full) {
+            $items = $this->postProcessor->process($items, $dir);
+        }
 
         $outputData = [
             'items' => $items,
