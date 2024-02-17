@@ -50,6 +50,7 @@ class YamlPack
     {
         $finder = new Finder();
         $finder->files()
+            ->ignoreDotFiles(false)
             ->in($dir)
             ->name('*.yaml');
 
