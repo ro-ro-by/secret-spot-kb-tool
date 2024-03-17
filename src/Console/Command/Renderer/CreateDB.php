@@ -7,6 +7,7 @@ namespace RoRoBy\SecretSpotKbTool\Console\Command\Renderer;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception;
+use RoRoBy\SecretSpotKbTool\Model\Sight\Location\ExtractGeometries;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,6 +22,7 @@ class CreateDB extends Command
     private const ARGUMENT_KB_FILE = 'kb_file';
 
     public function __construct(
+        private readonly ExtractGeometries $extractGeometries,
         string $name = null
     ) {
         parent::__construct($name);
@@ -101,7 +103,7 @@ SQL);
     {
         return array_map(
             fn(array $geometry) => $this->buildItemLocationRow($item, $geometry),
-            $this->extractItemGeometries($item)
+            $this->extractGeometries->execute($item)
         );
     }
 
@@ -121,71 +123,6 @@ SQL);
             'type' => $item['type'],
             'location' => json_encode($geometry),
         ];
-    }
-
-    /**
-     * Extract geometries from sight item.
-     *
-     * @param array $item
-     * @return array
-     */
-    private function extractItemGeometries(array $item): array
-    {
-        $locations = $item['location'] ?? [];
-        $geometries = [];
-        foreach ($locations as $location) {
-            $geometries = array_merge($geometries, $this->extractItemLocationGeometries($location));
-        }
-
-        return $geometries;
-    }
-
-    /**
-     * Extract geometries from sight item location data.
-     *
-     * @param array $location
-     * @return array[]
-     */
-    private function extractItemLocationGeometries(array $location): array
-    {
-        if ($location['type'] === 'point') {
-            return [
-                [
-                    'type' => 'Point',
-                    'coordinates' => [
-                        $location['coordinates']['lon'],
-                        $location['coordinates']['lat'],
-                    ]
-                ]
-            ];
-        }
-
-        if ($location['type'] === 'geojson') {
-            return $this->extractGeometries($location['geojson']['content']);
-        }
-
-        return [];
-    }
-
-    /**
-     * Extract geometries from GeoJSON features.
-     *
-     * @param string $geojson
-     * @return array[]
-     */
-    private function extractGeometries(string $geojson): array
-    {
-        $featureCollection = json_decode($geojson, true);
-
-        $geometries = array_column($featureCollection['features'], 'geometry');
-
-        // skip non-polygon geometries as workaround for correct rendering of areas
-        $geometries = array_filter(
-            $geometries,
-            fn(array $geom) => in_array($geom['type'], ['Polygon', 'MultiPolygon'])
-        );
-
-        return $geometries;
     }
 
     /**

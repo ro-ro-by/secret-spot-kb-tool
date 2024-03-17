@@ -4,6 +4,7 @@ return [
     'console.command.list' => [
         \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\KB\Repo\Unpack::class),
         \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\KB\Repo\Pack::class),
+        \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\KB\Export\GeoJSON::class),
         \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\KB\Changeset\Apply::class),
         \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\KB\Changeset\Create::class),
         \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\KB\Changeset\Create\OsmLocationDump::class),
