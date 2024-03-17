@@ -39,7 +39,7 @@ class GeoJSON extends Command
 
         $features = [];
         foreach ($this->getItemsWithGeometries($items) as [$item, $geometries]) {
-            $features[] = $this->buildFeatureByItem($item, $geometries);
+            $features = array_merge($features, $this->buildFeaturesByItem($item, $geometries));
         }
 
         $featureCollection = [
@@ -53,27 +53,47 @@ class GeoJSON extends Command
     }
 
     /**
-     * Build feature with geometries for sight item.
+     * Build features with geometries for sight item.
+     *
+     * Initially this method designed to generate single feature with `GeometryCollection`,
+     * but this type of geometry isn't supported by many viewers
      *
      * @param array $item
      * @param array $geometries
      * @return array
      */
-    private function buildFeatureByItem(array $item, array $geometries): array
+    private function buildFeaturesByItem(array $item, array $geometries): array
     {
-        return [
-            'type' => 'Feature',
-            'id' => 'secret-spot-' . $item['id'],
-            'geometry' => [
-                'type' => 'GeometryCollection',
-                'geometries' => $geometries,
-            ],
-            'properties' => [
-                'id' => $item['id'],
-                'type' => $item['type'],
-                'title' => $item['title'],
-            ]
-        ];
+        $shortId = explode('-', $item['id'])[2];
+        $titleLong = sprintf(
+            '[%s] %s (%s)',
+            $shortId,
+            $item['title'],
+            $item['type']
+        );
+        $description = sprintf(
+            "id: %s\ntitle: %s\ntype: %s",
+            $shortId,
+            $item['title'],
+            $item['type']
+        );
+
+        return array_map(
+            function (array $geometry) use ($item, $titleLong, $description): array {
+                return [
+                    'type' => 'Feature',
+                    'geometry' => $geometry,
+                    'properties' => [
+                        'id' => $item['id'],
+                        'type' => $item['type'],
+                        'title' => $item['title'],
+                        'title_long' => $titleLong,
+                        'description' => $description,
+                    ],
+                ];
+            },
+            $geometries
+        );
     }
 
     /**

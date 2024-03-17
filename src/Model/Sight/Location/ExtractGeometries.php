@@ -39,8 +39,8 @@ class ExtractGeometries
                 [
                     'type' => 'Point',
                     'coordinates' => [
-                        $location['coordinates']['lon'],
-                        $location['coordinates']['lat'],
+                        (float)$location['coordinates']['lon'],
+                        (float)$location['coordinates']['lat'],
                     ]
                 ]
             ];
