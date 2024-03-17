@@ -16,6 +16,8 @@ RUN apt-get install -y libpq-dev \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo pdo_pgsql pgsql
 
+RUN echo "memory_limit=2G" >> "$PHP_INI_DIR/php.ini"
+
 COPY --from=node:slim /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=node:slim /usr/local/bin/node /usr/local/bin/node
 RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
