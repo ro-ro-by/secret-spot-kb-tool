@@ -67,7 +67,7 @@ class OsmLocationDump extends Command
         $sightItems = array_filter(
             $kbItems,
             function (array $item): bool {
-                return str_starts_with($item['id'], 'sight:');
+                return str_starts_with($item['id'], 'sight-');
             }
         );
 

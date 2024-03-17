@@ -63,7 +63,7 @@ class YamlUnpack
 
     private function getItemTypeById(string $id): string
     {
-        $parts = explode(':', $id);
+        $parts = explode('-', $id);
 
         return $parts[0];
     }

@@ -50,7 +50,7 @@ class Stat extends Command
         $sightItems = array_filter(
             $kbItems,
             function ($item) {
-                return str_starts_with($item['id'], 'sight:');
+                return str_starts_with($item['id'], 'sight-');
             }
         );
 
