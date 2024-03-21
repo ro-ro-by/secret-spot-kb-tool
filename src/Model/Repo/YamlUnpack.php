@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace RoRoBy\SecretSpotKbTool\Model\Repo;
 
+use RoRoBy\SecretSpotKbTool\Model\Repo\System\SystemDataUtil;
 use RoRoBy\SecretSpotKbTool\Model\Repo\Unpack\MetadataStrategy;
 use RoRoBy\SecretSpotKbTool\Model\Repo\Unpack\SightStrategy;
 use Symfony\Component\Yaml\Yaml;
@@ -15,7 +16,8 @@ class YamlUnpack
 {
     public function __construct(
         private readonly SightStrategy $sightStrategy,
-        private readonly MetadataStrategy $metadataStrategy
+        private readonly MetadataStrategy $metadataStrategy,
+        private readonly SystemDataUtil $systemDataUtil
     ) {
     }
 
@@ -27,6 +29,11 @@ class YamlUnpack
     public function execute(string $input, string $dir): void
     {
         ['items' => $items] = Yaml::parse($input);
+
+        $items = array_map(
+            fn (array $item): array => $this->systemDataUtil->cleanData($item),
+            $items
+        );
 
         $byType = $this->groupItemsByType($items);
 

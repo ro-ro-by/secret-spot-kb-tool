@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace RoRoBy\SecretSpotKbTool\Model\Repo;
 
 use RoRoBy\SecretSpotKbTool\Model\Repo\Pack\PostProcessorInterface;
+use RoRoBy\SecretSpotKbTool\Model\Repo\System\SystemDataUtil;
 use RoRoBy\SecretSpotKbTool\Model\Repo\Yaml\YamlFormatter;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -14,9 +16,12 @@ use Symfony\Component\Yaml\Yaml;
  */
 class YamlPack
 {
+    private const SYSTEM_KEY_SOURCE_FILE = 'source';
+
     public function __construct(
         private readonly YamlFormatter $yamlFormatter,
-        private readonly PostProcessorInterface $postProcessor
+        private readonly PostProcessorInterface $postProcessor,
+        private readonly SystemDataUtil $systemDataUtil
     ) {
     }
 
@@ -56,13 +61,28 @@ class YamlPack
 
         $items = [];
         foreach ($finder as $file) {
+            $fileItems = $this->extractItemsFromSourceFile($file->getRealPath());
+            $fileItems = $this->addSourceSystemDataToItems($fileItems, $file);
+
             $items = array_merge(
                 $items,
-                $this->extractItemsFromSourceFile($file->getRealPath()),
+                $fileItems,
             );
         }
 
         return $items;
+    }
+
+    private function addSourceSystemDataToItems(array $items, SplFileInfo $sourceFile): array
+    {
+        return array_map(
+            function (array $item) use ($sourceFile): array {
+                return $this->systemDataUtil->addData($item, [
+                    self::SYSTEM_KEY_SOURCE_FILE => $sourceFile->getRelativePathname(),
+                ]);
+            },
+            $items
+        );
     }
 
     private function extractItemsFromSourceFile(string $path): array

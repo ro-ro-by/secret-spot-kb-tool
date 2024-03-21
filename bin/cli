@@ -11,7 +11,7 @@ use Symfony\Component\Console\Application;
 
 $containerBuilder = new ContainerBuilder();
 $containerBuilder->useAutowiring(true);
-$containerBuilder->addDefinitions('./system/di.php');
+$containerBuilder->addDefinitions(BP . '/system/di.php');
 
 $container = $containerBuilder->build();
 
