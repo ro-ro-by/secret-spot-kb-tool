@@ -1,18 +1,12 @@
-# SecretSpot KB tool
+# [🙊] Secret Spot | KB tool
 
-Pack of tools to manage SecretSpot KB
+Tools to manage Secret Spot Knowledge Bases
 
 ## Docker Image
 
 ### Build
-
 ```
 docker buildx build . --tag isxam/secret-spot-kb-tool:[tag]
-```
-
-### Push
-```
-docker push isxam/secret-spot-kb-tool:latest
 ```
 
 ### Example
