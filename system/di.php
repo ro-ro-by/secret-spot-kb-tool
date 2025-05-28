@@ -7,8 +7,10 @@ return [
         \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\KB\Export\GeoJSON::class),
         \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\KB\Changeset\Apply::class),
         \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\KB\Changeset\Create::class),
+        \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\KB\Changeset\Create\ByFgbUpdate::class),
         \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\KB\Changeset\Create\OsmLocationDump::class),
         \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\Renderer\CreateDB::class),
+        \DI\get(\RoRoBy\SecretSpotKbTool\Console\Command\KB\Stat\Diff::class),
     ],
     \RoRoBy\SecretSpotKbTool\Console\CommandList::class => DI\autowire()->constructor(
         defaultList: \DI\get('console.command.list')
