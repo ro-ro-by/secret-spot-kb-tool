@@ -11,8 +11,12 @@ use Symfony\Component\Yaml\Yaml;
  */
 class YamlFormatter
 {
-    public function format(array $data): string
+    public function format(array|null $data): string|null
     {
+        if (!is_array($data)) {
+            return null;
+        }
+
         return Yaml::dump($data, 6, 4, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
     }
 }

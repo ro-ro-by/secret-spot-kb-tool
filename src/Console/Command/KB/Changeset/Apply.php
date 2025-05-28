@@ -82,23 +82,36 @@ class Apply extends Command
         }
 
         foreach ($changeset['changes'] as $id => $change) {
+            $a = $change['a'] ? Yaml::parse($change['a']) : null;
+            $b = $change['b'] ? Yaml::parse($change['b']) : null;
+
+            // new item
+            if ($a === null) {
+                $kb['items'][] = $b;
+                continue;
+            }
+
             $kbPos = $kbIdPosMap[$id];
             $kbItem = $kb['items'][$kbPos];
 
-            $changeA = Yaml::parse($change['a']);
-            $changeB = Yaml::parse($change['b']);
-
-            if (!$this->isItemsEqual($kbItem, $changeA)) {
+            if (!$this->isItemsEqual($kbItem, $a)) {
                 throw new Exception('Invalid source item content.');
             }
 
-            $kb['items'][$kbPos] = $changeB;
+            // removed item
+            if ($b === null) {
+                unset($kb['items'][$kbPos]);
+                continue;
+            }
+
+            // modified
+            $kb['items'][$kbPos] = $b;
         }
 
         return $kb;
     }
 
-    private function isItemsEqual(array $a, array $b): bool
+    private function isItemsEqual(?array $a, ?array $b): bool
     {
         return var_export($a, true) === var_export($b, true);
     }
